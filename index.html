@@ -376,6 +376,21 @@
         total = guests.length
         summaryDiv.textContent = `共 ${total} 位賓客`
         resultsDiv.innerHTML = ''
+
+        // === 新增開始：預載所有桌次圖片 ===
+        if (guests && guests.length > 0) {
+          const uniqueTableNumbers = [...new Set(guests.map(g => g.table).filter(t => t))]; // 過濾掉空桌號
+          console.log('準備預載以下桌次圖片:', uniqueTableNumbers);
+          uniqueTableNumbers.forEach(tableNum => {
+            const img = new Image();
+            img.src = 'table/' + tableNum + '.jpg';
+            // 你可以選擇性地加入 onload 和 onerror 來追蹤預載狀態
+            // img.onload = () => console.log(`圖片 table/${tableNum}.jpg 已預載`);
+            // img.onerror = () => console.error(`預載圖片 table/${tableNum}.jpg 失敗`);
+          });
+        }
+        // === 新增結束 ===
+
       } catch (e) {
         resultsDiv.innerHTML = '<div class="no-result">無法載入資料</div>'
       }
@@ -491,6 +506,21 @@
         total = guests.length
         summaryDiv.textContent = `共 ${total} 位賓客`
         resultsDiv.innerHTML = ''
+
+        // === 新增開始：預載所有桌次圖片 ===
+        if (guests && guests.length > 0) {
+          const uniqueTableNumbers = [...new Set(guests.map(g => g.table).filter(t => t))]; // 過濾掉空桌號
+          console.log('準備預載以下桌次圖片:', uniqueTableNumbers);
+          uniqueTableNumbers.forEach(tableNum => {
+            const img = new Image();
+            img.src = 'table/' + tableNum + '.jpg';
+            // 你可以選擇性地加入 onload 和 onerror 來追蹤預載狀態
+            // img.onload = () => console.log(`圖片 table/${tableNum}.jpg 已預載`);
+            // img.onerror = () => console.error(`預載圖片 table/${tableNum}.jpg 失敗`);
+          });
+        }
+        // === 新增結束 ===
+
       } catch (e) {
         resultsDiv.innerHTML = '<div class="no-result">無法載入資料</div>'
       }
