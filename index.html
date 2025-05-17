@@ -448,7 +448,7 @@
             const newDropdown = document.createElement('div');
             newDropdown.className = 'image-dropdown show';
             const img = document.createElement('img');
-            img.src = '/table/' + g.table + '.jpg'; // 'g' 來自外層 forEach 的閉包
+            img.src = 'table/' + g.table + '.jpg'; // 'g' 來自外層 forEach 的閉包
             img.alt = '桌次圖片：' + g.table;
             img.onerror = function() {
               this.alt = '圖片載入失敗：' + g.table;
