@@ -50,11 +50,15 @@
         const text = await response.text();
         const json = JSON.parse(text.substr(47).slice(0, -2));
         guests = json.table.rows.map(row => {
-  return {
-    name: row.c[0]?.v || '',
-    table: row.c[1]?.v ?? row.c[1]?.f ?? ''
-  };
-});
+          return {
+            name: row.c[0]?.v || '',
+            table: row.c[1]?.v ?? row.c[1]?.f ?? ''
+          };
+        });
+      } catch (e) {
+        console.error("讀取 Google Sheet 錯誤：", e);
+      }
+    }
 
     loadSheet();
 
