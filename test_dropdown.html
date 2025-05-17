@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dropdown Test</title>
+  <style>
+    body { font-family: sans-serif; padding: 20px; }
+    .button {
+      padding: 10px 15px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    .dropdown-content {
+      display: none; /* 預設隱藏 */
+      margin-top: 10px;
+      padding: 15px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      background-color: #f9f9f9;
+    }
+    .dropdown-content.show {
+      display: block; /* 點擊後顯示 */
+    }
+    .dropdown-content img {
+      max-width: 150px;
+      max-height: 150px;
+      border: 1px solid #ddd;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Dropdown 觸發測試</h1>
+  <button id="testButton" class="button">點我測試 Dropdown</button>
+
+  <div id="testDropdown" class="dropdown-content">
+    <p>如果看到我，表示 dropdown 正常觸發。</p>
+    <p>下方應該要顯示一張圖片：</p>
+    <img src="/table/1.jpg" alt="測試圖片" onerror="this.alt='圖片載入失敗，請檢查 /table/default.jpg 是否存在且路徑正確'; console.error('Test image failed to load:', this.src);">
+  </div>
+
+  <script>
+    const testButton = document.getElementById('testButton');
+    const testDropdown = document.getElementById('testDropdown');
+
+    testButton.addEventListener('click', () => {
+      console.log('Button clicked, toggling dropdown.');
+      if (testDropdown.classList.contains('show')) {
+        testDropdown.classList.remove('show');
+      } else {
+        testDropdown.classList.add('show');
+      }
+    });
+
+    // 點擊 dropdown 外部區域時關閉 (可選)
+    document.addEventListener('click', (event) => {
+      if (!testButton.contains(event.target) && !testDropdown.contains(event.target) && testDropdown.classList.contains('show')) {
+        console.log('Clicked outside, closing dropdown.');
+        testDropdown.classList.remove('show');
+      }
+    });
+  </script>
+
+</body>
+</html> 

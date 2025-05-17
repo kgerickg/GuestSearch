@@ -5,71 +5,360 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>賓客座位查詢</title>
   <style>
+    :root { /* 定義淺色模式的顏色變數 */
+      --body-bg-start: #fdfbfb;
+      --body-bg-end: #ebedee;
+      --container-bg: #fff;
+      --text-primary: #333;
+      --text-secondary: #6c757d;
+      --text-title: #b08d57;
+      --accent-color: #b08d57;
+      --accent-color-light: #c9a97e;
+      --accent-shadow-color: rgba(176, 141, 87, 0.35);
+      --input-bg: #fff;
+      --input-border: #ced4da;
+      --result-bg: #fff;
+      --result-border: #eef0f2;
+      --result-hover-bg: #fefcf8;
+      --result-hover-border: #b08d57;
+      --result-copied-bg: #e6ffed;
+      --result-copied-border-left: #28a745;
+      --mark-bg: #fff3cd;
+      --mark-color: #594500;
+      --table-label-color: #495057;
+      --table-number-bg: #dc3545;
+      --table-number-color: white;
+      --image-dropdown-bg: #f8f9fa;
+      --image-dropdown-border: #dee2e6;
+      --toggle-button-bg: #f0f0f0;
+      --toggle-button-text: #333;
+      --toggle-button-border: #ccc;
+    }
+
+    .dark-mode { /* 定義深色模式的顏色變數 */
+      --body-bg-start: #232526;
+      --body-bg-end: #414345;
+      --container-bg: #2c3034; /* 深色容器背景 */
+      --text-primary: #e8eaed; /* 淺色文字 */
+      --text-secondary: #a8acb1; /* 稍暗的淺色文字 */
+      --text-title: #e5c598; /* 深色模式下的金色強調，可以亮一些 */
+      --accent-color: #e5c598;
+      --accent-color-light: #f0d8b0;
+      --accent-shadow-color: rgba(229, 197, 152, 0.3);
+      --input-bg: #3a3f44;
+      --input-border: #5f6368;
+      --result-bg: #3a3f44; /* 結果列背景 */
+      --result-border: #5f6368; /* 結果列邊框 */
+      --result-hover-bg: #4f5357;
+      --result-hover-border: #e5c598;
+      --result-copied-bg: #2a4f3a; /* 深色模式的複製成功背景 */
+      --result-copied-border-left: #38761d; /* 深色模式的複製成功邊框 */
+      --mark-bg: #5c491a;
+      --mark-color: #fde293;
+      --table-label-color: #a8acb1;
+      --table-number-bg: #a02c37; /* 深色模式的紅色，可以暗一點 */
+      --table-number-color: #f8f9fa;
+      --image-dropdown-bg: #32363a;
+      --image-dropdown-border: #5f6368;
+      --toggle-button-bg: #555;
+      --toggle-button-text: #fff;
+      --toggle-button-border: #777;
+    }
+
+    /* CodePen Toggle CSS Variables - Placed after my :root and .dark-mode */
+    :root { 
+      /* These are general page variables, will be overridden by my existing ones if names conflict.
+         I will use the CodePen specific names for the toggle itself. */
+      --cp-toggleHeight: 16em; /* Prefixing with cp- to avoid conflicts */
+      --cp-toggleWidth: 30em;
+      --cp-toggleBtnRadius: 10em;
+
+      --cp-bgColor--night: #423966;
+      --cp-toggleBtn-bgColor--night: var(--cp-bgColor--night);
+      --cp-mooncolor: #D9FBFF;
+      --cp-bgColor--day: #9ee3fb; 
+      --cp-toggleBtn-bgColor--day: var(--cp-bgColor--day);
+    }
+
+    .tdnn { /* Main toggle switch container from CodePen */
+      position: absolute;
+      top: 1.6rem; /* 調整 top 值以更好地對齊標題 */
+      right: 3.5vw; /* <<<--- 增加 right 值，使按鈕向左移動 */
+      font-size: 12.5%; /* <<<--- 增加 font-size 以放大按鈕 */
+      height: var(--cp-toggleHeight);
+      width: var(--cp-toggleWidth);
+      border-radius: var(--cp-toggleHeight);
+      transition: background 500ms ease-in-out;
+      background: var(--cp-bgColor--day); /* Default to day background for the toggle */
+      cursor: pointer;
+      z-index: 1000;
+      /* box-shadow: 0 0 5px rgba(0,0,0,0.2); /* Optional: add a subtle shadow to the toggle */
+    }
+    body.dark-mode .tdnn {
+      background: var(--cp-bgColor--night); /* Night background for the toggle */
+    }
+
     body {
-      font-family: sans-serif;
-      padding: 1rem;
-      background-color: #f9f9f9;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"; /* 更現代的字體棧 */
+      padding: 0; /* 移除預設 padding，改由 .container 控制 */
+      margin: 0; /* 移除預設 margin */
+      /* background-color: #f4f7f6; /* 更柔和的背景色 */
+      background: linear-gradient(to bottom, var(--body-bg-start) 0%, var(--body-bg-end) 100%); /* 非常淡的暖色漸層背景 */
+      color: var(--text-primary); /* 設定基礎文字顏色 */
+      line-height: 1.6; /* 改善可讀性 */
+      min-height: 100vh; /* 確保漸層至少填滿整個視窗高度 */
+    }
+    .container { /* 新增容器來管理內容寬度和居中 */
+      max-width: 90vw; /* <<<--- 大幅增加容器最大寬度，使其接近全螢幕寬度 */
+      margin: 1rem auto 2rem; /* 頂部 margin，底部 margin 維持，左右自動居中 */
+      padding: 1rem 2vw; /* 稍微調整水平 padding 為視窗寬度的百分比 */
+      background-color: var(--container-bg); /* 內容區背景設為白色 */
+      border-radius: 10px; /* 稍微調整圓角 */
+      box-shadow: 0 6px 18px rgba(0,0,0,0.07); /* 調整陰影 */
     }
     h1 {
       text-align: center;
+      color: var(--text-title); /* <<<--- 更改為柔和的金色系強調色 */
+      font-weight: 600; /* 適中粗細 */
+      font-size: 1.85rem; /* 縮小標題大小 */
+      margin-bottom: 1.25rem; /* 減少標題下方間距 */
     }
     input {
       width: 100%;
-      padding: 0.75rem;
-      font-size: 1.2rem;
-      margin-bottom: 1rem;
-      border: 1px solid #ccc;
-      border-radius: 8px;
+      padding: 0.7rem 0.9rem; /* 減少垂直 padding */
+      font-size: 1rem; /* 稍微調整字體大小 */
+      margin-bottom: 1rem; /* 減少下方間距 */
+      border: 1px solid var(--input-border); /* 更改邊框顏色 */
+      border-radius: 8px; /* 圓角 */
+      box-sizing: border-box; /* 確保 padding 和 border 不會增加總寬度 */
+      transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out; /* 過渡效果 */
+    }
+    input:focus {
+      border-color: var(--accent-color-light); /* <<<--- 焦點時邊框顏色也用金色系 */
+      outline: 0; /* 移除預設 outline */
+      box-shadow: 0 0 0 0.2rem var(--accent-shadow-color); /* <<<--- 焦點時陰影，使用金色系的半透明色 */
     }
     .result {
-      background: white;
-      padding: 1rem;
-      margin-bottom: 0.5rem;
-      border-radius: 8px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-      display: flex;
-      justify-content: space-between;
-      font-size: 1.15em;
-      cursor: pointer;
-      transition: background 0.2s;
+      background: var(--result-bg); /* 背景維持白色 */
+      padding: 0.55rem 1.15rem; /* 稍微增加垂直 padding 以適應較大字體 */
+      margin-bottom: 0rem; /* 再次減少下方間距 */
+      border-radius: 5px; /* 可以稍微減小圓角以配合更緊湊的設計 */
+      border: 1px solid var(--result-border); /* 更淡的邊框 */
+      /* box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* 移除舊的，避免與 border 衝突或太重 */
+      /* display: flex; /* 已有 */
+      /* flex-direction: column; /* 已有 */
+      /* position: relative; /* 已有 */
+      transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease; /* 加入過渡效果, 新增 background-color */
+    }
+    .result:hover { /* 新增 hover 效果 */
+      border-color: var(--result-hover-border); /* <<<--- hover 時邊框用強調金色 */
+      background-color: var(--result-hover-bg); /* <<<--- hover 時非常淡的金色系背景 */
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
     }
     .result.copied {
-      background: #d1ffd6;
+      background: var(--result-copied-bg); /* 更柔和的綠色 */
+      border-left: 5px solid var(--result-copied-border-left); /* 左側加一個成功的綠色邊框提示 */
+      padding-left: calc(1.25rem - 5px); /* 調整 padding 以適應左邊框 */
     }
+
+    /* 新增：淡化其他結果的樣式 */
+    .result.dimmed {
+      opacity: 0.15; /* 大幅降低透明度 */
+      filter: blur(3px); /* 加上模糊效果 */
+      transition: opacity 0.3s ease-in-out, filter 0.3s ease-in-out; /* 同時過渡透明度和模糊 */
+    }
+
     .no-result {
       text-align: center;
-      color: #888;
+      color: var(--text-secondary); /* 與 summary 類似的顏色 */
+      padding: 2rem 1rem; /* 增加 padding 使其更突出 */
+      font-style: italic; /* 斜體 */
     }
     .summary {
       text-align: right;
-      font-size: 1em;
-      color: #555;
-      margin-bottom: 0.5em;
+      font-size: 0.9em; /* 稍微調整字體大小 */
+      color: var(--text-secondary); /* 更改顏色 */
+      margin-bottom: 0.75rem; /* 減少下方間距 */
     }
     mark {
-      background: #ffe066;
-      color: #222;
-      padding: 0 3px;
+      background: var(--mark-bg); /* 更柔和的黃色 */
+      color: var(--mark-color); /* 深色文字確保對比度 */
+      padding: 0.1em 0.3em; /* 微調 padding */
       border-radius: 3px;
+    }
+    .image-dropdown {
+      display: none;
+      margin-top: 1rem;
+      padding: 0.75rem;
+      border: 1px solid var(--image-dropdown-border);
+      border-radius: 6px;
+      background-color: var(--image-dropdown-bg);
+      text-align: center;
+      max-width: 100%;
+      margin-left: auto;
+      margin-right: auto;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+    }
+    .image-dropdown.show {
+      display: block;
+    }
+    .image-dropdown img {
+      max-width: 100%;
+      height: auto;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      display: block;
+    }
+    .result-text-content {
+      /* display: flex; */ /* 舊的 flex 設定 */
+      /* justify-content: space-between; */ /* 舊的 flex 設定 */
+      display: grid; /* 改用 Grid 佈局 */
+      grid-template-columns: 1fr auto auto; /* 姓名(自動擴展) | 桌號標籤(內容寬) | 桌號數字(內容寬) */
+      gap: 0.25em; /* 設定欄間距 */
+      width: 100%; /* 確保佔滿寬度 */
+      align-items: baseline; /* 垂直基線對齊 */
+      font-size: 1em; /* 將結果列文字大小調回/調大 */
+    }
+    /* .table-info 的樣式可以移除了，因為該 class 已被移除 */
+    /*
+    .table-info { 
+      display: inline-flex; 
+      align-items: baseline; 
+    }
+    */
+    .table-label {
+      /* display: inline-block; /* 在 Grid item 中通常不需要 */
+      /* min-width: 3.5em; /* 在 Grid 中，欄寬由 grid-template-columns 控制，這裡可能不再需要 */
+      /* text-align: left; /* Grid item 預設 text-align 是繼承的，通常是 left */
+      color: var(--table-label-color); /* 給標籤一個柔和的顏色 */
+      /* margin-right: 0.1em; /* 由 Grid gap 控制間距 */
+      white-space: nowrap; /* 防止 "桌號：" 換行 */
+    }
+    .table-number {
+      background-color: var(--table-number-bg); /* 紅色背景 (Bootstrap danger color) */
+      color: var(--table-number-color); /* 白色文字 */
+      padding: 0.15em 0.5em; /* 上下左右內邊距 */
+      border-radius: 4px; /* 圓角 */
+      font-weight: 500; /* 數字加粗一點 */
+      /* margin-left: 0.25em; /* 因為 table-label 有了 margin-right，這裡可以不用或調整 */
+    }
+    /* 移除舊的 .theme-toggle-button 文字按鈕樣式 - 確認已註解或移除 */
+
+    /* 新的 Theme Switch 樣式 - 來自用戶提供的 CodePen */
+    /* ... (稍後會插入用戶提供的 CSS) ... */
+
+    .container { /* 新增容器來管理內容寬度和居中 */
+      max-width: 90vw; /* <<<--- 大幅增加容器最大寬度，使其接近全螢幕寬度 */
+      margin: 1rem auto 2rem; /* 頂部 margin，底部 margin 維持，左右自動居中 */
+      padding: 1rem 2vw; /* 稍微調整水平 padding 為視窗寬度的百分比 */
+      background-color: var(--container-bg); /* 內容區背景設為白色 */
+      border-radius: 10px; /* 稍微調整圓角 */
+      box-shadow: 0 6px 18px rgba(0,0,0,0.07); /* 調整陰影 */
+    }
+
+    .moon { /* Moon/Sun element. Base style for moon. */
+      position: absolute;
+      display: block;
+      border-radius: 50%;
+      transition: all 400ms ease-in-out;
+      top: 3em; /* Position within .tdnn */
+      left: 3em; /* Position within .tdnn */
+      transform: rotate(-75deg);
+      width: var(--cp-toggleBtnRadius);
+      height: var(--cp-toggleBtnRadius);
+      background: var(--cp-toggleBtn-bgColor--day); /* Moon button color in day */
+      /* Stars/crescent for moon state, visible in dark mode */
+      box-shadow: 
+        3em 2.5em 0 0em var(--cp-mooncolor) inset, /* Crescent */
+        rgba(255, 255, 255, 0.1) 0em -7em 0 -4.5em,  /* Stars */
+        rgba(255, 255, 255, 0.1) 3em 7em 0 -4.5em,
+        rgba(255, 255, 255, 0.1) 2em 13em 0 -4em,
+        rgba(255, 255, 255, 0.1) 6em 2em 0 -4.1em,
+        rgba(255, 255, 255, 0.1) 8em 8em 0 -4.5em,
+        rgba(255, 255, 255, 0.1) 6em 13em 0 -4.5em,
+        rgba(255, 255, 255, 0.1) -4em 7em 0 -4.5em,
+        rgba(255, 255, 255, 0.1) -1em 10em 0 -4.5em;
+    }
+
+    body:not(.dark-mode) .moon { /* Moon element when in light mode (day) */
+      background: #FFDE00; /* Sun-like color for the button itself in day mode */
+      box-shadow: none; /* No crescent or stars in day mode for the base .moon */
+      /* transform: rotate(0deg); /* Reset rotation for sun if it were base .moon */
+    }
+
+    body.dark-mode .moon { /* Moon element when in dark mode */
+      background: var(--cp-toggleBtn-bgColor--night);
+      /* Crescent and stars should be visible as defined in the base .moon box-shadow with --cp-mooncolor */
+    }
+
+    .moon.sun { /* Sun state styles */
+      top: 4.5em;      
+      left: 18em; /* Calculated as: var(--cp-toggleWidth) - var(--cp-toggleBtnRadius) - 3em (left margin) */
+      transform: rotate(0deg);
+      width: 7em;    /* Sun specific size, not --cp-toggleBtnRadius */
+      height: 7em;
+      background: #FFFFFF; /* Sun body is white */
+      /* Sun rays for light mode (yellowish) */
+      box-shadow: 
+        0 -5em 0 -2.7em #FFFACD, 
+        3.5em -3.5em 0 -3em #FFFACD,
+        5em 0 0 -2.7em #FFFACD,
+        3.5em 3.5em 0 -3em #FFFACD,
+        0 5em 0 -2.7em #FFFACD,
+        -3.5em 3.5em 0 -3em #FFFACD,
+        -5em 0 0 -2.7em #FFFACD,
+        -3.5em -3.5em 0 -3em #FFFACD;
+    }
+    
+    body.dark-mode .moon.sun {
+        /* Dark mode sun styles - background and position are the same */
+        /* Only change ray color if needed, here making them white for dark bg */
+        background: #FFFFFF; /* Sun body is white (already set in .moon.sun but good to be explicit) */
+        box-shadow: /* White sun rays for dark mode */
+            0 -5em 0 -2.7em #FFFFFF, 
+            3.5em -3.5em 0 -3em #FFFFFF,
+            5em 0 0 -2.7em #FFFFFF,
+            3.5em 3.5em 0 -3em #FFFFFF,
+            0 5em 0 -2.7em #FFFFFF,
+            -3.5em 3.5em 0 -3em #FFFFFF,
+            -5em 0 0 -2.7em #FFFFFF,
+            -3.5em -3.5em 0 -3em #FFFFFF;
     }
   </style>
 </head>
 <body>
-  <h1>賓客座位查詢</h1>
-  <input type="text" id="search" placeholder="輸入姓名，例如：黃" autofocus />
-  <div class="summary" id="summary"></div>
-  <div id="results"></div>
+  <div class="container">
+    <div class="tdnn" id="theme-toggle-codepen">
+      <span class="moon"></span>
+    </div>
+    <h1>賓客座位查詢</h1>
+    <input type="text" id="search" placeholder="輸入姓名，例如：黃" autofocus />
+    <div class="summary" id="summary"></div>
+    <div id="results"></div>
+  </div>
+
   <script>
     let guests = []
     let total = 0
+    let currentlyFocusedResult = null; // 新增：用於追蹤當前焦點的結果項目
     const searchInput = document.getElementById('search')
     const resultsDiv = document.getElementById('results')
     const summaryDiv = document.getElementById('summary')
 
-    // 高亮關鍵字
     function highlight(text, keyword) {
       if (!keyword) return text
       return text.replace(new RegExp(keyword, 'gi'), m => `<mark>${m}</mark>`)
+    }
+
+    function updateDimmedResults(focusedResult) {
+      const allResults = document.querySelectorAll('#results .result');
+      allResults.forEach(res => {
+        if (focusedResult && res !== focusedResult) {
+          res.classList.add('dimmed');
+        } else {
+          res.classList.remove('dimmed');
+        }
+      });
     }
 
     async function loadSheet() {
@@ -95,15 +384,20 @@
     // 載入 Google Sheet 完成後自動聚焦
     window.onload = () => searchInput.focus()
 
-    // 輸入框自動全選
+    // 輸入框自動全選 (移除或註解此段)
+    /*
     searchInput.addEventListener('focus', () => searchInput.select())
+    */
 
     // 支援 Escape 清空
     searchInput.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') {
-        searchInput.value = ''
-        resultsDiv.innerHTML = ''
-        summaryDiv.textContent = `共 ${total} 位賓客`
+        searchInput.value = '';
+        resultsDiv.innerHTML = '';
+        summaryDiv.textContent = `共 ${total} 位賓客`;
+        currentlyFocusedResult = null; // 清除焦點
+        updateDimmedResults(null); // 清除淡化
+        window.scrollTo({ top: 0, behavior: 'smooth' }); // 改為捲動到頁面最頂部
       }
     })
 
@@ -111,6 +405,9 @@
     searchInput.addEventListener('input', () => {
       const keyword = searchInput.value.trim()
       resultsDiv.innerHTML = ''
+      currentlyFocusedResult = null; // 清除焦點
+      updateDimmedResults(null); // 在重新產生結果前清除淡化
+
       if (keyword === '') {
         summaryDiv.textContent = `共 ${total} 位賓客`
         return
@@ -118,20 +415,64 @@
       const filtered = guests.filter(g => g.name.includes(keyword))
       summaryDiv.textContent = `共 ${total} 位賓客，查詢到 ${filtered.length} 筆`
       if (filtered.length === 0) {
-        resultsDiv.innerHTML = '<div class="no-result">查無資料，請確認姓名或聯絡主辦人</div>'
+        resultsDiv.innerHTML = '<div class="no-result">查無資料，請確認姓名</div>'
         return
       }
       filtered.forEach(g => {
         const div = document.createElement('div')
         div.className = 'result'
-        // 點擊自動複製桌號
-        div.addEventListener('click', () => {
-          navigator.clipboard.writeText(g.table)
-          div.classList.add('copied')
-          setTimeout(() => div.classList.remove('copied'), 600)
+        // 點擊自動顯示圖片
+        div.addEventListener('click', function(event) {
+          // 檢查是否目前已有項目被高亮/展開
+          if (currentlyFocusedResult) {
+            // 如果是，則本次點擊的唯一作用是「清場」並返回初始列表狀態
+            document.querySelectorAll('.image-dropdown.show').forEach(d => d.remove());
+            currentlyFocusedResult = null;
+            updateDimmedResults(null);
+            searchInput.value = ''; // 清空搜尋框文字
+            window.scrollTo({ top: 0, behavior: 'smooth' }); // 改為捲動到頁面最頂部
+            // 清場後，NGC_EXTRACT_WARNING：此處的註解與程式碼不完全對應
+          } else {
+            // 如果沒有項目被高亮（即頁面處於初始列表狀態）
+            // 則檢查點擊的是否是圖片區域（理論上此時不應存在已展開的圖片）
+            if (event.target.closest('.image-dropdown')) {
+              return; // 如果意外點到圖片區域，不執行任何操作
+            }
+
+            // 點擊的是結果列的文本部分，執行「開啟」邏輯
+            const clickedItem = this;
+            currentlyFocusedResult = clickedItem;
+            updateDimmedResults(clickedItem);
+
+            // 創建並顯示圖片
+            const newDropdown = document.createElement('div');
+            newDropdown.className = 'image-dropdown show';
+            const img = document.createElement('img');
+            img.src = '/table/' + g.table + '.jpg'; // 'g' 來自外層 forEach 的閉包
+            img.alt = '桌次圖片：' + g.table;
+            img.onerror = function() {
+              this.alt = '圖片載入失敗：' + g.table;
+              if (newDropdown.contains(this)) {
+                newDropdown.innerHTML = '<p>無法載入桌次 ' + g.table + ' 的圖片</p>';
+              }
+            };
+            newDropdown.appendChild(img);
+            clickedItem.appendChild(newDropdown);
+
+            // 捲動到畫面中間
+            setTimeout(() => {
+              clickedItem.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 100);
+          }
         })
-        div.innerHTML = `<strong>${highlight(g.name, keyword)}</strong><span>桌號：${g.table}</span>`
-        resultsDiv.appendChild(div)
+        // div.innerHTML = `<strong>${highlight(g.name, keyword)}</strong><span>桌號：${g.table}</span>`; // 舊的設定方式
+        // 新的設定方式：建立一個專門放文字內容的 div
+        const textContentWrapper = document.createElement('div');
+        textContentWrapper.className = 'result-text-content';
+        textContentWrapper.innerHTML = `<strong>${highlight(g.name, keyword)}</strong><span class="table-label">桌號：</span><span class="table-number">${g.table}</span>`;
+        div.appendChild(textContentWrapper);
+
+        resultsDiv.appendChild(div);
       })
     })
 
@@ -155,6 +496,59 @@
       }
     }
     main()
+
+    // 新增：點擊頁面其他地方關閉 dropdown
+    document.addEventListener('click', function(event) {
+      const openDropdown = document.querySelector('.image-dropdown.show')
+      if (openDropdown) {
+        // 檢查點擊事件的目標是否在任何 .result 元素或其子元素 (包括 dropdown) 之內
+        const clickedInsideResultOrDropdown = event.target.closest('.result')
+        
+        if (!clickedInsideResultOrDropdown) {
+          // 如果點擊發生在所有 .result 元素之外，則關閉 dropdown
+          const openDropdown = document.querySelector('.image-dropdown.show'); // 需要重新獲取，因為可能已被移除
+          if (openDropdown) openDropdown.remove();
+          
+          if (currentlyFocusedResult) { // 確保確實有焦點需要清除
+            currentlyFocusedResult = null; // 清除焦點
+            updateDimmedResults(null); // 清除淡化狀態
+            searchInput.value = ''; // 清空搜尋框文字
+            window.scrollTo({ top: 0, behavior: 'smooth' }); // 改為捲動到頁面最頂部
+          }
+        }
+      }
+    })
+
+    // 深色模式切換邏輯 - CodePen Style
+    const themeToggleCodepen = document.getElementById('theme-toggle-codepen');
+    const moonOrSunElement = themeToggleCodepen.querySelector('.moon'); // Get the span inside
+    const bodyElement = document.body;
+
+    function applyTheme(theme) {
+      if (theme === 'dark') {
+        bodyElement.classList.add('dark-mode');
+        moonOrSunElement.classList.remove('sun'); // Show moon in dark mode
+      } else {
+        bodyElement.classList.remove('dark-mode');
+        moonOrSunElement.classList.add('sun'); // Show sun in light mode
+      }
+    }
+
+    themeToggleCodepen.addEventListener('click', () => {
+      const isDarkMode = bodyElement.classList.contains('dark-mode');
+      const newTheme = isDarkMode ? 'light' : 'dark';
+      localStorage.setItem('theme', newTheme);
+      applyTheme(newTheme);
+    });
+
+    // 頁面載入時應用儲存的主題
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme) {
+      applyTheme(savedTheme);
+    } else {
+      // Default to light theme if no preference is saved
+      applyTheme('light'); 
+    }
   </script>
 </body>
 </html>
