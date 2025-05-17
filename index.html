@@ -49,12 +49,11 @@
         const response = await fetch("https://docs.google.com/spreadsheets/d/1rGPBjCI46dMrVDXGDU6rQM51H1FG4Mt27f_EL0qVvdM/gviz/tq?tqx=out:json");
         const text = await response.text();
         const json = JSON.parse(text.substr(47).slice(0, -2));
-        guests = json.table.rows.map(row => {
-          return {
-            name: row.c[0]?.v || '',
-            table: row.c[1]?.v ?? row.c[1]?.f ?? ''
-          };
-        });
+        guests = json.table.rows.map(row => ({
+          name: row.c[0]?.v || '',
+          // 先抓 f（formatted value，支援中文），再抓 v（純值），最後空字串
+          table: row.c[1]?.f ?? row.c[1]?.v ?? ''
+        }));
       } catch (e) {
         console.error("讀取 Google Sheet 錯誤：", e);
       }
