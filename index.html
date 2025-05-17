@@ -465,19 +465,28 @@
             const img = document.createElement('img');
             img.src = 'table/' + g.table + '.jpg'; // 'g' 來自外層 forEach 的閉包
             img.alt = '桌次圖片：' + g.table;
+
+            // 當圖片成功載入後執行捲動
+            img.onload = function() {
+              // 確保 dropdown 和圖片仍然是預期的一部分才捲動
+              if (newDropdown.contains(this) && clickedItem.contains(newDropdown)) {
+                clickedItem.scrollIntoView({ behavior: 'smooth', block: 'center' });
+              }
+            };
+
             img.onerror = function() {
               this.alt = '圖片載入失敗：' + g.table;
               if (newDropdown.contains(this)) {
                 newDropdown.innerHTML = '<p>無法載入桌次 ' + g.table + ' 的圖片</p>';
               }
+              // 即使圖片載入失敗，也嘗試捲動到該項目
+              if (clickedItem.contains(newDropdown) || !newDropdown.parentElement) { // 如果 dropdown 還沒被 append 或是已經是 clickedItem 的子元素
+                 clickedItem.scrollIntoView({ behavior: 'smooth', block: 'center' });
+              }
             };
+
             newDropdown.appendChild(img);
             clickedItem.appendChild(newDropdown);
-
-            // 捲動到畫面中間
-            setTimeout(() => {
-              clickedItem.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            }, 100);
           }
         })
         // div.innerHTML = `<strong>${highlight(g.name, keyword)}</strong><span>桌號：${g.table}</span>`; // 舊的設定方式
