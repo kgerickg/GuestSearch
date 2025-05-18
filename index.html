@@ -69,9 +69,9 @@
     :root { 
       /* These are general page variables, will be overridden by my existing ones if names conflict.
          I will use the CodePen specific names for the toggle itself. */
-      --cp-toggleHeight: 16em; /* Prefixing with cp- to avoid conflicts */
-      --cp-toggleWidth: 30em;
-      --cp-toggleBtnRadius: 10em;
+      /* 移除了 --cp-toggleHeight, --cp-toggleWidth, --cp-toggleBtnRadius 的 em 定義，
+         它們的 em 值將直接在 .tdnn 和 .moon 中使用，
+         以確保它們基於 .tdnn 的 font-size。*/
 
       --cp-bgColor--night: #423966;
       --cp-toggleBtn-bgColor--night: var(--cp-bgColor--night);
@@ -84,10 +84,10 @@
       position: absolute;
       top: 1.6rem; /* 調整 top 值以更好地對齊標題 */
       right: 3.5vw; /* <<<--- 增加 right 值，使按鈕向左移動 */
-      font-size: 12.5%; /* <<<--- 增加 font-size 以放大按鈕 */
-      height: var(--cp-toggleHeight);
-      width: var(--cp-toggleWidth);
-      border-radius: var(--cp-toggleHeight);
+      font-size: 1.5px; /* <<<--- 設定明確的 px 值作為 em 的基準 */
+      height: 16em; /* 現在是 16px */
+      width: 30em;  /* 現在是 30px */
+      border-radius: 16em; /* 現在是 16px，使其成為膠囊狀 */
       transition: background 500ms ease-in-out;
       background: var(--cp-bgColor--day); /* Default to day background for the toggle */
       cursor: pointer;
@@ -261,11 +261,11 @@
       display: block;
       border-radius: 50%;
       transition: all 400ms ease-in-out;
-      top: 3em; /* Position within .tdnn */
-      left: 3em; /* Position within .tdnn */
+      top: 3em; /* Position within .tdnn, relative to .tdnn's font-size */
+      left: 3em; /* Position within .tdnn, relative to .tdnn's font-size */
       transform: rotate(-75deg);
-      width: var(--cp-toggleBtnRadius);
-      height: var(--cp-toggleBtnRadius);
+      width: 10em; /* 直接使用 em，基於 .tdnn's font-size */
+      height: 10em;/* 直接使用 em，基於 .tdnn's font-size */
       background: var(--cp-toggleBtn-bgColor--day); /* Moon button color in day */
       /* Stars/crescent for moon state, visible in dark mode */
       box-shadow: 
