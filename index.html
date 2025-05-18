@@ -69,9 +69,9 @@
     :root { 
       /* These are general page variables, will be overridden by my existing ones if names conflict.
          I will use the CodePen specific names for the toggle itself. */
-      --cp-toggleHeight: 16em; /* Prefixing with cp- to avoid conflicts */
-      --cp-toggleWidth: 30em;
-      --cp-toggleBtnRadius: 10em;
+      --cp-toggleHeight: 64px; /* Prefixing with cp- to avoid conflicts */
+      --cp-toggleWidth: 120px;
+      --cp-toggleBtnRadius: 40px;
 
       --cp-bgColor--night: #423966;
       --cp-toggleBtn-bgColor--night: var(--cp-bgColor--night);
@@ -84,9 +84,9 @@
       position: absolute;
       top: 1.6rem; /* 調整 top 值以更好地對齊標題 */
       right: 3.5vw; /* <<<--- 增加 right 值，使按鈕向左移動 */
-      font-size: 12.5%; /* <<<--- 增加 font-size 以放大按鈕 */
-      height: var(--cp-toggleHeight);
-      width: var(--cp-toggleWidth);
+      font-size: 20px; /* <<<--- 增加 font-size 以放大按鈕 */
+      height: 64px;
+      width: 120px;
       border-radius: var(--cp-toggleHeight);
       transition: background 500ms ease-in-out;
       background: var(--cp-bgColor--day); /* Default to day background for the toggle */
