@@ -297,22 +297,13 @@
     }
 
     .result-text-content {
-      /* display: flex; */
-      /* 舊的 flex 設定 */
-      /* justify-content: space-between; */
-      /* 舊的 flex 設定 */
       display: grid;
-      /* 改用 Grid 佈局 */
       grid-template-columns: 1fr auto auto;
       /* 姓名(自動擴展) | 桌號標籤(內容寬) | 桌號數字(內容寬) */
       gap: 0.25em;
-      /* 設定欄間距 */
       width: 100%;
-      /* 確保佔滿寬度 */
       align-items: baseline;
-      /* 垂直基線對齊 */
       font-size: 1em;
-      /* 將結果列文字大小調回/調大 */
     }
 
     /* .table-info 的樣式可以移除了，因為該 class 已被移除 */
@@ -529,10 +520,12 @@
     /* 新增：桌號別名樣式 */
     .table-name {
       color: var(--text-secondary);
-      opacity: 0.5;
-      font-size: 0.75em;
-      margin-left: 0.5em;
+      opacity: 1;
+      font-size: 1em;
+      margin-right: 0.5em;
+      /* 改為右邊距 */
       font-weight: normal;
+      white-space: nowrap;
     }
   </style>
 </head>
@@ -552,7 +545,7 @@
 
     <!-- 姓名查詢頁籤 -->
     <div class="tab-content active" id="name-search">
-      <input type="text" id="search" placeholder="輸入姓名，例如：黃" autofocus />
+      <input type="text" id="search" placeholder="輸入姓名任一字，例如：黃or莉or方" autofocus />
       <div class="summary" id="summary"></div>
       <div id="results"></div>
     </div>
@@ -717,7 +710,11 @@
         })
         const textContentWrapper = document.createElement('div');
         textContentWrapper.className = 'result-text-content';
-        textContentWrapper.innerHTML = `<strong>${highlight(g.name, keyword)}</strong><span class="table-label">桌號：</span><span class="table-number">${g.table}</span><span class="table-name">${g.tableName}</span>`;
+        textContentWrapper.innerHTML = `
+          <strong>${highlight(g.name, keyword)}</strong>
+          <span class="table-label">桌號：</span>
+          <span class="table-number">${g.table}</span>
+        `;
         div.appendChild(textContentWrapper);
 
         resultsDiv.appendChild(div);
