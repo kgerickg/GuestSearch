@@ -529,8 +529,10 @@
     /* 新增：桌號別名樣式 */
     .table-name {
       color: var(--text-secondary);
-      font-size: 0.9em;
+      opacity: 0.5;
+      font-size: 0.75em;
       margin-left: 0.5em;
+      font-weight: normal;
     }
   </style>
 </head>
@@ -557,7 +559,7 @@
 
     <!-- 桌次查詢頁籤 -->
     <div class="tab-content" id="table-search">
-      <input type="text" id="tableSearch" placeholder="請輸入桌次號碼" />
+      <input type="tel" inputmode="numeric" pattern="[0-9]*" id="tableSearch" placeholder="請輸入桌次號碼" />
       <div class="summary" id="tableSummary"></div>
       <div id="tableResults"></div>
     </div>
