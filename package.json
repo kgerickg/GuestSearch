@@ -1,0 +1,21 @@
+{
+  "name": "app",
+  "version": "1.0.0",
+  "description": "賓客座位查詢",
+  "main": "index.js",
+  "scripts": {
+    "test": "python3 -m http.server 8000 > /dev/null 2>&1 & PID=$!; sleep 2; python3 tests/test_app.py; EXIT_CODE=$?; kill $PID; exit $EXIT_CODE"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kgerickg/GuestSearch.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/kgerickg/GuestSearch/issues"
+  },
+  "homepage": "https://github.com/kgerickg/GuestSearch#readme"
+}
